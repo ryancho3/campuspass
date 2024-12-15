@@ -160,13 +160,21 @@ SITE_URL = 'https://campuspass.app'  # Use your domain in production, e.g., 'htt
 
 
 # Email configuration
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Replace with your email address
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Replace with your email password
+# DEFAULT_FROM_EMAIL = 'CampusPass <campuspass.app@gmail.com>'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Replace with your email address
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Replace with your email password
-DEFAULT_FROM_EMAIL = 'CampusPass <campuspass.app@gmail.com>'
+EMAIL_HOST_USER = 'apikey' # Replace with your email address
+EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')  # Replace with your email password
+DEFAULT_FROM_EMAIL = 'CampusPass <noreply@campuspass.app>'
 
 
 if not env('DEBUG'):  # Only enable in production
