@@ -13,7 +13,8 @@
         <li><strong>Location:</strong> {{ ticket.ticket_type.event.location }}</li>
     </ul>
     <p><strong>QR Code:</strong></p>
-    <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code">
+    <!-- Use the cid reference for the inline image -->
+    <img src="cid:qr_code" alt="QR Code">
     <p>Please bring this QR code to the event for validation.</p>
 </body>
 </html>
