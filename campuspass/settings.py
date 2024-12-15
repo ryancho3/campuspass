@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tickets',
+    'ebhealthcheck.apps.EBHealthCheckConfig'
 ]
 
 MIDDLEWARE = [
