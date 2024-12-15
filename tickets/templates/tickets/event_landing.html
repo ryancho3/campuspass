@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Event Details -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ event.name }}</h1>
+            <p class="text-muted">Organized by {{ event.organizer.first_name|default:event.organizer.username }}</p>
+            <p><strong>Description:</strong> {{ event.description }}</p>
+            <p><strong>Date:</strong> 
+                {% if event.is_date_tbd %}
+                    TBD
+                {% else %}
+                    {{ event.date|date:"F j, Y, g:i a" }}
+                {% endif %}
+            </p>
+            <p><strong>Location:</strong> {{ event.location }}</p>
+        </div>
+    </div>
+
+    <!-- Ticket Types -->
+    <div class="row">
+        <h3>Available Tickets</h3>
+        <div class="col-md-12">
+            <ul class="list-group">
+                {% for ticket_type in ticket_types %}
+                    <li class="list-group-item {% if ticket_type.quantity_available == 0 %}disabled{% endif %}">
+                        {% if ticket_type.quantity_available > 0 %}
+                            <a href="{% url 'purchase_ticket' ticket_type.id %}" class="stretched-link text-decoration-none d-flex justify-content-between align-items-center">
+                                <span>
+                                    <strong>{{ ticket_type.name }}</strong>
+                                </span>
+                                <span>
+                                    {{ ticket_type.price }} {{ ticket_type.currency }}
+                                </span>
+                            </a>
+                        {% else %}
+                            <div class="d-flex justify-content-between align-items-center text-muted">
+                                <span>
+                                    <strong>{{ ticket_type.name }}</strong>
+                                    <span class="badge bg-danger ms-2">Sold Out</span>
+                                </span>
+                                <span>
+                                    {{ ticket_type.price }} {{ ticket_type.currency }}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

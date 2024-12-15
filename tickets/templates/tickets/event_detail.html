@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0 text-center">{{ event.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Event Details</h4>
+                    <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
+                    <p><strong>Date:</strong>
+                        {% if event.is_date_tbd %}
+                            TBD
+                        {% else %}
+                            {{ event.date|date:"F j, Y, g:i a" }}
+                        {% endif %}
+                    </p>
+                    
+                    <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+
+                    <h5 class="mt-4">Payment Information</h5>
+                    {% if event.venmo_id %}
+                        <p><strong>Venmo ID:</strong> {{ event.venmo_id }}</p>
+                    {% endif %}
+                    {% if event.zelle_phone %}
+                        <p><strong>Zelle Phone:</strong> {{ event.zelle_phone }}</p>
+                    {% endif %}
+                    {% if event.bank_account_info %}
+                        <p><strong>Bank Account Details:</strong> {{ event.bank_account_info }}</p>
+                    {% endif %}
+                    
+                    <h5 class="mt-4">Ticket Summary</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Ticket Type</th>
+                                <th>Pending</th>
+                                <th>Verified</th>
+                                <th>Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket_type, tickets in ticket_summary.items %}
+                                <tr>
+                                    <td>{{ ticket_type }}</td>
+                                    <td>{{ tickets.Pending }}</td>
+                                    <td>{{ tickets.Verified }}</td>
+                                    <td>{{ tickets.Used }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'modify_event' event.id %}" class="btn btn-warning">Modify Event</a>
+                    <a href="{% url 'manage_tickets' event.id %}" class="btn btn-primary">Manage Tickets</a>
+                    <a href="{% url 'manage_ticket_types' event.id %}" class="btn btn-info">Manage Ticket Types</a>
+                    <a href="{% url 'delete_event' event.id %}" class="btn btn-danger" 
+                       onclick="return confirm('Are you sure you want to delete this event?');">Delete Event</a>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-secondary" id="copy-purchase-link">Copy Purchase Link</button>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    Created on {{ event.created_at|date:"F j, Y" }}
+                </div>
+                
+                <script>
+                    document.getElementById('copy-purchase-link').addEventListener('click', function() {
+                        const url = "{% url 'event_landing' event.id %}";
+                        navigator.clipboard.writeText(window.location.origin + url).then(() => {
+                            alert('Purchase link copied to clipboard!');
+                        }).catch(err => {
+                            console.error('Failed to copy link: ', err);
+                        });
+                    });
+                </script>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Confirmation{% endblock %}
+
+{% block content %}
+<div class="container mt-4 text-center">
+    <h1>Thank You!</h1>
+    <p>Your ticket request has been successfully processed. Once your payment is verified, your ticket will be emailed to you.</p>
+    
+    <h4 class="mt-4">Ticket Details</h4>
+    <p><strong>Ticket ID:</strong> {{ ticket.unique_id }}</p>
+    <p><strong>Event:</strong> {{ event.name }}</p>
+    <p><strong>Ticket Type:</strong> {{ ticket.ticket_type.name }}</p>
+    <p><strong>Price:</strong> ${{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</p>
+    
+    <h4 class="mt-4">Payment Instructions</h4>
+    <div class="payment-instructions">
+        {% for method, details in payment_methods %}
+            {% if not forloop.first %}
+                <p class="text-center"><strong>OR</strong></p>
+            {% endif %}
+            
+            {% if method == 'Venmo' %}
+                <p>To complete your purchase, you must Venmo {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>@{{ details }}</strong>.</p>
+            {% elif method == 'Zelle' %}
+                <p>To complete your purchase, you must Zelle {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>{{ details }}</strong>.</p>
+            {% elif method == 'Bank' %}
+                <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
+                <pre>{{ details }}</pre>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

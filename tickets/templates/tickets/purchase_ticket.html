@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Ticket{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Event Details -->
+    <div class="mb-4">
+        <h1>{{ event.name }}</h1>
+        <p><strong>Description:</strong> {{ event.description }}</p>
+        <p><strong>Date:</strong> {{ event.date|date:"F j, Y, g:i a" }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+    </div>
+
+    <!-- Purchase Form -->
+    <h3>Purchase {{ ticket_type.name }}</h3>
+    <form method="post" class="needs-validation mx-auto" novalidate style="max-width: 600px;">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+            {{ form.first_name }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+            {{ form.last_name }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.confirm_email.id_for_label }}" class="form-label">Confirm Email</label>
+            {{ form.confirm_email }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.payment_method.id_for_label }}" class="form-label">Payment Method</label>
+            {{ form.payment_method }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.payment_identifier.id_for_label }}" id="payment-identifier-label" class="form-label">Payment Identifier</label>
+            {{ form.payment_identifier }}
+            <div class="form-text">
+                Enter the appropriate payment identifier for the selected payment method.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Submit Purchase Request</button>
+    </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentMethod = document.getElementById('payment-method');
+            const identifierLabel = document.getElementById('payment-identifier-label');
+    
+            // Function to update the payment identifier label based on the selected method
+            function updateLabel(method) {
+                if (method === 'Venmo') {
+                    identifierLabel.innerText = "Venmo ID";
+                } else if (method === 'Zelle') {
+                    identifierLabel.innerText = "Zelle Phone Number";
+                } else if (method === 'Bank Transfer') {
+                    identifierLabel.innerText = "Bank Account Holder Name";
+                } else {
+                    identifierLabel.innerText = "Payment Identifier";
+                }
+            }
+    
+            // Update label whenever the user selects a different payment method
+            paymentMethod.addEventListener('change', function () {
+                updateLabel(this.value);
+            });
+    
+            // Update the label on initial load based on the default selected value
+            updateLabel(paymentMethod.value);
+        });
+    </script>
+</div>
+{% endblock %}

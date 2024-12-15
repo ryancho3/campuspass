@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}My Events{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Events</h1>
+<a href="{% url 'create_event' %}" class="btn btn-primary mb-3">Create New Event</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if events %}
+            {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>
+                {% if event.is_date_tbd %}
+                            TBD
+                        {% else %}
+                            {{ event.date|date:"F j, Y, g:i a" }}
+                        {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

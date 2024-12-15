@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">Create Event</h1>
+<form method="post" class="needs-validation mx-auto" novalidate style="max-width: 600px;">
+    {% csrf_token %}
+    
+    <!-- Render each field with a label and red asterisk for required fields -->
+    {% for field in form %}
+        <div class="mb-3">
+            {% if field.name == 'is_date_tbd' %}
+                <div class="form-check">
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}" class="form-check-label">
+                        {{ field.label }}
+                    </label>
+                </div>
+            {% else %}
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary w-100">Create Event</button>
+</form>
+{% endblock %}
+

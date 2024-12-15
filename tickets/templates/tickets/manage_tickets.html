@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Tickets{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Manage Tickets for {{ event.name }}</h1>
+    <p class="text-muted text-center">View and update the status of tickets for this event.</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Ticket Type</th>
+                <th>Ticket Price</th>
+                <th>Payment Method</th>
+                <th>Payment Identifier</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in page_obj %}
+            <tr>
+                <!-- Clickable row for navigation -->
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.first_name }} {{ ticket.last_name }}</td>
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.email }}</td>
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.ticket_type.name }}</td>
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.ticket_type.price }}</td>
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.payment_method }}</td>
+                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.payment_identifier }}</td>
+
+                <!-- Editable status field -->
+                <td>
+                    <form method="post" action="{% url 'update_ticket_status' ticket.id %}">
+                        {% csrf_token %}
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="Pending" {% if ticket.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="Verified" {% if ticket.status == "Verified" %}selected{% endif %}>Verified</option>
+                            <option value="Used" {% if ticket.status == "Used" %}selected{% endif %}>Used</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No tickets available for this event.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for page in page_obj.paginator.page_range %}
+            <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
+

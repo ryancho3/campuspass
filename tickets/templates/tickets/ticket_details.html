@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Ticket Details</h1>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Ticket ID</th>
+            <td>{{ ticket.unique_id }}</td>
+        </tr>
+        <tr>
+            <th>Event</th>
+            <td>{{ ticket.ticket_type.event.name }}</td>
+        </tr>
+        <tr>
+            <th>Ticket Type</th>
+            <td>{{ ticket.ticket_type.name }}</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>${{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ ticket.first_name }} {{ ticket.last_name }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ ticket.email }}</td>
+        </tr>
+        <tr>
+            <th>Payment Method</th>
+            <td>
+                {% if ticket.ticket_type.event.venmo_id %}
+                    Venmo
+                {% elif ticket.ticket_type.event.zelle_phone %}
+                    Zelle
+                {% elif ticket.ticket_type.event.bank_account_info %}
+                    Bank Transfer
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Payment Identifier</th>
+            <td>{{ ticket.payment_identifier }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_status" value="1">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="Pending" {% if ticket.status == "Pending" %}selected{% endif %}>Pending</option>
+                        <option value="Verified" {% if ticket.status == "Verified" %}selected{% endif %}>Verified</option>
+                        <option value="Used" {% if ticket.status == "Used" %}selected{% endif %}>Used</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">Update Status</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    {% if ticket.status != 'Used' %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="update_status" value="1">
+        <input type="hidden" name="status" value="Used">
+        <button type="submit" class="btn btn-danger">Mark as Used</button>
+    </form>
+    {% else %}
+    <p class="text-danger">This ticket has already been used.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

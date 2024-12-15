@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Ticket Types for {{ event.name }}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">Manage Ticket Types</h1>
+
+<!-- Existing Ticket Types -->
+<h3 class="mt-5 mb-3">Existing Ticket Types</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Currency</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket_type in ticket_types %}
+        <tr>
+            <td>{{ ticket_type.name }}</td>
+            <td>{{ ticket_type.price }}</td>
+            <td>{{ ticket_type.currency }}</td>
+            <td>{{ ticket_type.quantity_available }}</td>
+            <td>
+                <a href="{% url 'modify_ticket_type' ticket_type.id %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'delete_ticket_type' ticket_type.id %}" class="btn btn-danger btn-sm" 
+                   onclick="return confirm('Are you sure you want to delete this ticket type?');">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No ticket types found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Add New Ticket Type -->
+<h3 class="mt-5 mb-3">Add a New Ticket Type</h3>
+<form method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Add Ticket Type</button>
+</form>
+{% endblock %}
