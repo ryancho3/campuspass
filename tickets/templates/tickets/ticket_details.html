@@ -33,15 +33,7 @@
         </tr>
         <tr>
             <th>Payment Method</th>
-            <td>
-                {% if ticket.ticket_type.event.venmo_id %}
-                    Venmo
-                {% elif ticket.ticket_type.event.zelle_phone %}
-                    Zelle
-                {% elif ticket.ticket_type.event.bank_account_info %}
-                    Bank Transfer
-                {% endif %}
-            </td>
+            <td>{{ ticket.payment_method }}</td>
         </tr>
         <tr>
             <th>Payment Identifier</th>
