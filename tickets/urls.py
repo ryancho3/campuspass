@@ -22,4 +22,5 @@ urlpatterns = [
     path('events/<int:event_id>/tickets/manage/', views.manage_tickets, name='manage_tickets'),
     path('tickets/<int:ticket_id>/update-status/', views.update_ticket_status, name='update_ticket_status'),
     path('tickets/<uuid:unique_id>/', views.ticket_details, name='ticket_details'),
+    path('health/', views.health, name='health_check')
 ]
