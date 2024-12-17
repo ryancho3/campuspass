@@ -34,7 +34,12 @@
                                     <strong>{{ ticket_type.name }}</strong>
                                 </span>
                                 <span>
-                                    {{ ticket_type.price }} {{ ticket_type.currency }}
+                                    {% if ticket_type.currency == 'KRW' %}
+                                        {{ ticket_type.price|floatformat:"0" }}
+                                    {% else %}
+                                        {{ ticket_type.price|floatformat:"2" }}
+                                    {% endif %}
+                                    {{ ticket_type.currency }}
                                 </span>
                             </a>
                         {% else %}
@@ -44,7 +49,12 @@
                                     <span class="badge bg-danger ms-2">Sold Out</span>
                                 </span>
                                 <span>
-                                    {{ ticket_type.price }} {{ ticket_type.currency }}
+                                    {% if ticket_type.currency == 'KRW' %}
+                                        {{ ticket_type.price|floatformat:"0" }}
+                                    {% else %}
+                                        {{ ticket_type.price|floatformat:"2" }}
+                                    {% endif %}
+                                    {{ ticket_type.currency }}
                                 </span>
                             </div>
                         {% endif %}

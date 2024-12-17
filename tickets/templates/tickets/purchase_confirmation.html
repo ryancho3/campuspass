@@ -11,22 +11,29 @@
     <p><strong>Ticket ID:</strong> {{ ticket.unique_id }}</p>
     <p><strong>Event:</strong> {{ event.name }}</p>
     <p><strong>Ticket Type:</strong> {{ ticket.ticket_type.name }}</p>
-    <p><strong>Price:</strong> ${{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</p>
+    <p><strong>Price:</strong> ${% if ticket.ticket_type.currency == 'KRW' %}{{ ticket.ticket_type.price|floatformat:"0" }}{% else %}{{ ticket.ticket_type.price }}{% endif %} {{ ticket.ticket_type.currency }}</p>
     
     <h4 class="mt-4">Payment Instructions</h4>
     <div class="payment-instructions">
         {% for method, details in payment_methods %}
-            {% if not forloop.first %}
-                <p class="text-center"><strong>OR</strong></p>
-            {% endif %}
-            
-            {% if method == 'Venmo' %}
-                <p>To complete your purchase, you must Venmo {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>@{{ details }}</strong>.</p>
-            {% elif method == 'Zelle' %}
-                <p>To complete your purchase, you must Zelle {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>{{ details }}</strong>.</p>
-            {% elif method == 'Bank' %}
-                <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
-                <pre>{{ details }}</pre>
+            {% if ticket.ticket_type.currency == 'KRW' %}
+                {% if method == 'Bank' %}
+                    <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price|floatformat:"0" }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
+                    <pre>{{ details }}</pre>
+                {% endif %}
+            {% else %}
+                {% if not forloop.first %}
+                    <p class="text-center"><strong>OR</strong></p>
+                {% endif %}
+                
+                {% if method == 'Venmo' %}
+                    <p>To complete your purchase, you must Venmo {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>@{{ details }}</strong>.</p>
+                {% elif method == 'Zelle' %}
+                    <p>To complete your purchase, you must Zelle {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>{{ details }}</strong>.</p>
+                {% elif method == 'Bank' %}
+                    <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
+                    <pre>{{ details }}</pre>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>
