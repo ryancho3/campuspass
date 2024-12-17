@@ -3,64 +3,117 @@
 {% block title %}{{ event.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Event Details -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h1>{{ event.name }}</h1>
-            <p class="text-muted">Organized by {{ event.organizer.first_name|default:event.organizer.username }}</p>
-            <p><strong>Description:</strong> {{ event.description }}</p>
-            <p><strong>Date:</strong> 
-                {% if event.is_date_tbd %}
-                    TBD
-                {% else %}
-                    {{ event.date|date:"F j, Y, g:i a" }}
-                {% endif %}
-            </p>
-            <p><strong>Location:</strong> {{ event.location }}</p>
-        </div>
-    </div>
+<div class="container py-5">
+    <!-- Event Header -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="display-4 fw-bold mb-3">{{ event.name }}</h1>
+                <div class="d-flex align-items-center text-muted mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-circle me-2" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                    Organized by {{ event.organizer.first_name|default:event.organizer.username }}
+                </div>
+            </div>
 
-    <!-- Ticket Types -->
-    <div class="row">
-        <h3>Available Tickets</h3>
-        <div class="col-md-12">
-            <ul class="list-group">
-                {% for ticket_type in ticket_types %}
-                    <li class="list-group-item {% if ticket_type.quantity_available == 0 %}disabled{% endif %}">
-                        {% if ticket_type.quantity_available > 0 %}
-                            <a href="{% url 'purchase_ticket' ticket_type.id %}" class="stretched-link text-decoration-none d-flex justify-content-between align-items-center">
-                                <span>
-                                    <strong>{{ ticket_type.name }}</strong>
-                                </span>
-                                <span>
-                                    {% if ticket_type.currency == 'KRW' %}
-                                        {{ ticket_type.price|floatformat:"0" }}
-                                    {% else %}
-                                        {{ ticket_type.price|floatformat:"2" }}
-                                    {% endif %}
-                                    {{ ticket_type.currency }}
-                                </span>
-                            </a>
-                        {% else %}
-                            <div class="d-flex justify-content-between align-items-center text-muted">
-                                <span>
-                                    <strong>{{ ticket_type.name }}</strong>
-                                    <span class="badge bg-danger ms-2">Sold Out</span>
-                                </span>
-                                <span>
-                                    {% if ticket_type.currency == 'KRW' %}
-                                        {{ ticket_type.price|floatformat:"0" }}
-                                    {% else %}
-                                        {{ ticket_type.price|floatformat:"2" }}
-                                    {% endif %}
-                                    {{ ticket_type.currency }}
-                                </span>
+            <!-- Event Info Cards -->
+            <div class="row g-3 mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-calendar-event text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                                </svg>
+                                <h5 class="card-title mb-0">Date & Time</h5>
                             </div>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+                            {% if event.is_date_tbd %}
+                                <p class="card-text">To be determined</p>
+                            {% else %}
+                                <p class="card-text">{{ event.date|date:"F j, Y, g:i a" }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                </svg>
+                                <h5 class="card-title mb-0">Location</h5>
+                            </div>
+                            <p class="card-text">{{ event.location }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Description -->
+            <div class="mb-5">
+                <h2 class="h4 mb-4">About this event</h2>
+                <p class="lead">{{ event.description }}</p>
+            </div>
+        </div>
+
+        <!-- Ticket Section -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 2rem;">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0">Available Tickets</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for ticket_type in ticket_types %}
+                            <div class="list-group-item {% if ticket_type.quantity_available == 0 %}bg-light{% endif %}">
+                                {% if ticket_type.quantity_available > 0 %}
+                                    <a href="{% url 'purchase_ticket' ticket_type.id %}" 
+                                       class="d-block text-decoration-none p-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h3 class="h6 mb-0 text-dark">{{ ticket_type.name }}</h3>
+                                            <span class="badge bg-success">Available</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted small">Price</span>
+                                            <span class="text-primary fw-bold">
+                                                {% if ticket_type.currency == 'KRW' %}
+                                                    {{ ticket_type.price|floatformat:"0" }}
+                                                {% else %}
+                                                    {{ ticket_type.price|floatformat:"2" }}
+                                                {% endif %}
+                                                {{ ticket_type.currency }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                {% else %}
+                                    <div class="p-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h3 class="h6 mb-0 text-muted">{{ ticket_type.name }}</h3>
+                                            <span class="badge bg-danger">Sold Out</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted small">Price</span>
+                                            <span class="text-muted">
+                                                {% if ticket_type.currency == 'KRW' %}
+                                                    {{ ticket_type.price|floatformat:"0" }}
+                                                {% else %}
+                                                    {{ ticket_type.price|floatformat:"2" }}
+                                                {% endif %}
+                                                {{ ticket_type.currency }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
