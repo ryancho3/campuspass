@@ -3,88 +3,209 @@
 {% block title %}{{ event.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0 text-center">{{ event.name }}</h2>
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm mb-4">
+                <!-- Event Header -->
+                <div class="card-header bg-primary text-white p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="h3 mb-0">{{ event.name }}</h1>
+                        <button class="btn btn-light btn-sm" id="copy-purchase-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg me-2" viewBox="0 0 16 16">
+                                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
+                            </svg>
+                            Copy Purchase Link
+                        </button>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h4 class="card-title">Event Details</h4>
-                    <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
-                    <p><strong>Date:</strong>
-                        {% if event.is_date_tbd %}
-                            TBD
-                        {% else %}
-                            {{ event.date|date:"F j, Y, g:i a" }}
-                        {% endif %}
-                    </p>
-                    
-                    <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
 
-                    <h5 class="mt-4">Payment Information</h5>
-                    {% if event.venmo_id %}
-                        <p><strong>Venmo ID:</strong> {{ event.venmo_id }}</p>
-                    {% endif %}
-                    {% if event.zelle_phone %}
-                        <p><strong>Zelle Phone:</strong> {{ event.zelle_phone }}</p>
-                    {% endif %}
-                    {% if event.bank_account_info %}
-                        <p><strong>Bank Account Details:</strong> {{ event.bank_account_info }}</p>
-                    {% endif %}
-                    
-                    <h5 class="mt-4">Ticket Summary</h5>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Ticket Type</th>
-                                <th>Pending</th>
-                                <th>Verified</th>
-                                <th>Used</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ticket_type, tickets in ticket_summary.items %}
+                <div class="card-body p-4">
+                    <!-- Event Details Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-calendar-event text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                                </svg>
+                                {% if event.is_date_tbd %}
+                                    <span class="badge bg-secondary">Date TBD</span>
+                                {% else %}
+                                    <span>{{ event.date|date:"F j, Y, g:i a" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                </svg>
+                                <span>{{ event.location }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Description</h5>
+                            <p class="text-muted mb-0">{{ event.description }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-3">Payment Information</h5>
+                            <div class="row g-3">
+                                {% if event.venmo_id %}
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-wallet2 text-primary me-2" viewBox="0 0 16 16">
+                                            <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"/>
+                                        </svg>
+                                        <div>
+                                            <small class="text-muted d-block">Venmo</small>
+                                            <strong>{{ event.venmo_id }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if event.zelle_phone %}
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-phone text-primary me-2" viewBox="0 0 16 16">
+                                            <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+                                            <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                        </svg>
+                                        <div>
+                                            <small class="text-muted d-block">Zelle</small>
+                                            <strong>{{ event.zelle_phone }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if event.bank_account_info %}
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bank text-primary me-2" viewBox="0 0 16 16">
+                                            <path d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.501.501 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89L8 0ZM3.777 3h8.447L8 1 3.777 3ZM2 6v7h1V6H2Zm2 0v7h2.5V6H4Zm3.5 0v7h1V6h-1Zm2 0v7H12V6H9.5ZM13 6v7h1V6h-1Zm2-1V4H1v1h14Zm-.39 9H1.39l-.25 1h13.72l-.25-1Z"/>
+                                        </svg>
+                                        <div>
+                                            <small class="text-muted d-block">Bank Account</small>
+                                            <strong>{{ event.bank_account_info }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Summary -->
+                    <h5 class="mb-3">Ticket Summary</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="bg-light">
                                 <tr>
-                                    <td>{{ ticket_type }}</td>
-                                    <td>{{ tickets.Pending }}</td>
-                                    <td>{{ tickets.Verified }}</td>
-                                    <td>{{ tickets.Used }}</td>
+                                    <th class="border-0">Ticket Type</th>
+                                    <th class="border-0 text-center">Pending</th>
+                                    <th class="border-0 text-center">Verified</th>
+                                    <th class="border-0 text-center">Used</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for ticket_type, tickets in ticket_summary.items %}
+                                    <tr>
+                                        <td class="border-0">{{ ticket_type }}</td>
+                                        <td class="border-0 text-center">
+                                            <span class="badge bg-warning text-dark">{{ tickets.Pending }}</span>
+                                        </td>
+                                        <td class="border-0 text-center">
+                                            <span class="badge bg-success">{{ tickets.Verified }}</span>
+                                        </td>
+                                        <td class="border-0 text-center">
+                                            <span class="badge bg-secondary">{{ tickets.Used }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="card-footer text-center">
-                    <a href="{% url 'modify_event' event.id %}" class="btn btn-warning">Modify Event</a>
-                    <a href="{% url 'manage_tickets' event.id %}" class="btn btn-primary">Manage Tickets</a>
-                    <a href="{% url 'manage_ticket_types' event.id %}" class="btn btn-info">Manage Ticket Types</a>
-                    <a href="{% url 'delete_event' event.id %}" class="btn btn-danger" 
-                       onclick="return confirm('Are you sure you want to delete this event?');">Delete Event</a>
+
+                <!-- Action Buttons -->
+                <div class="card-footer bg-white p-4">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <a href="{% url 'modify_event' event.id %}" class="btn btn-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-1" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                            </svg>
+                            Modify Event
+                        </a>
+                        <a href="{% url 'manage_tickets' event.id %}" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ticket-perforated me-1" viewBox="0 0 16 16">
+                                <path d="M4 4.85v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Z"/>
+                                <path d="M4 4.85v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Z"/>
+                                <path d="M13.991 3.745H2c0 1.11.061 2.211.162 3.299H0V7.03h2.255c.25 2.337.424 4.577.518 6.71H1.673v-.982H.5a.5.5 0 0 0-.5.5v1.458c0 .277.224.5.5.5h13c.276 0 .5-.223.5-.5v-1.458a.5.5 0 0 0-.5-.5h-1.173v.982h-1.1c.094-2.133.268-4.373.518-6.71h2.255v-.016h-2.162c.101-1.088.162-2.189.162-3.299ZM10.6 3.745H5.4c0 1.11-.061 2.211-.162 3.299h5.524c-.101-1.088-.162-2.189-.162-3.299ZM5.1 7.044c-.25 2.337-.424 4.577-.518 6.71h6.836c-.094-2.133-.268-4.373-.518-6.71H5.1Z"/>
+                            </svg>
+                            Manage Tickets
+                        </a>
+                        <a href="{% url 'manage_ticket_types' event.id %}" class="btn btn-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tags me-1" viewBox="0 0 16 16">
+                                <path d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+                                <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+                            </svg>
+                            Manage Ticket Types
+                        </a>
+                        <a href="{% url 'delete_event' event.id %}" class="btn btn-danger" 
+                           onclick="return confirm('Are you sure you want to delete this event? This action cannot be undone.');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash me-1" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                            </svg>
+                            Delete Event
+                        </a>
+                    </div>
                 </div>
-                <div class="card-footer text-center">
-                    <button class="btn btn-secondary" id="copy-purchase-link">Copy Purchase Link</button>
+
+                <!-- Creation Date -->
+                <div class="card-footer bg-light text-center p-3">
+                    <small class="text-muted">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                            <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                            <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                            <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                        Created on {{ event.created_at|date:"F j, Y" }}
+                    </small>
                 </div>
-                <div class="card-footer text-muted text-center">
-                    Created on {{ event.created_at|date:"F j, Y" }}
-                </div>
-                
-                <script>
-                    document.getElementById('copy-purchase-link').addEventListener('click', function() {
-                        const url = "{% url 'event_landing' event.id %}";
-                        navigator.clipboard.writeText(window.location.origin + url).then(() => {
-                            alert('Purchase link copied to clipboard!');
-                        }).catch(err => {
-                            console.error('Failed to copy link: ', err);
-                        });
-                    });
-                </script>                
             </div>
         </div>
     </div>
 </div>
 
-
-
+<script>
+    document.getElementById('copy-purchase-link').addEventListener('click', function() {
+        const url = "{% url 'event_landing' event.id %}";
+        navigator.clipboard.writeText(window.location.origin + url).then(() => {
+            const button = this;
+            const originalText = button.innerHTML;
+            button.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg me-2" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                </svg>
+                Link Copied!`;
+            button.classList.remove('btn-light');
+            button.classList.add('btn-success');
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-light');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy link: ', err);
+            alert('Failed to copy link to clipboard');
+        });
+    });
+</script>
 {% endblock %}
+                                

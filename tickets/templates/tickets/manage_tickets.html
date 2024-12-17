@@ -3,74 +3,145 @@
 {% block title %}Manage Tickets{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="text-center">Manage Tickets for {{ event.name }}</h1>
-    <p class="text-muted text-center">View and update the status of tickets for this event.</p>
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex flex-column align-items-center mb-4">
+        <div class="d-flex align-items-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-ticket-detailed text-primary me-2" viewBox="0 0 16 16">
+                <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5ZM5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H5Z"/>
+                <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6V4.5Z"/>
+            </svg>
+            <h1 class="h2 mb-0">Manage Tickets</h1>
+        </div>
+        <span class="badge bg-primary mb-2">{{ event.name }}</span>
+        <p class="text-muted">View and update the status of tickets for this event.</p>
+    </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Ticket Type</th>
-                <th>Ticket Price</th>
-                <th>Payment Method</th>
-                <th>Payment Identifier</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ticket in page_obj %}
-            <tr>
-                <!-- Clickable row for navigation -->
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.first_name }} {{ ticket.last_name }}</td>
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.email }}</td>
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.ticket_type.name }}</td>
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.ticket_type.price }}</td>
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.payment_method }}</td>
-                <td onclick="window.location.href='{% url 'ticket_details' ticket.unique_id %}'" style="cursor: pointer;">{{ ticket.payment_identifier }}</td>
+    <!-- Ticket Table -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="border-0 py-3 px-4">Name</th>
+                            <th class="border-0 py-3 px-4">Email</th>
+                            <th class="border-0 py-3 px-4">Ticket Type</th>
+                            <th class="border-0 py-3 px-4">Price</th>
+                            <th class="border-0 py-3 px-4">Payment Method</th>
+                            <th class="border-0 py-3 px-4">Payment ID</th>
+                            <th class="border-0 py-3 px-4" style="width: 200px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in page_obj %}
+                        <tr class="ticket-row" data-href="{% url 'ticket_details' ticket.unique_id %}">
+                            <td class="py-3 px-4">{{ ticket.first_name }} {{ ticket.last_name }}</td>
+                            <td class="py-3 px-4">{{ ticket.email }}</td>
+                            <td class="py-3 px-4">{{ ticket.ticket_type.name }}</td>
+                            <td class="py-3 px-4">{{ ticket.ticket_type.price }}</td>
+                            <td class="py-3 px-4">{{ ticket.payment_method }}</td>
+                            <td class="py-3 px-4">{{ ticket.payment_identifier }}</td>
+                            <td class="py-3 px-4">
+                                <form method="post" action="{% url 'update_ticket_status' ticket.id %}" class="status-form">
+                                    {% csrf_token %}
+                                    <div class="d-flex gap-2">
+                                        <select name="status" class="form-select form-select-sm" style="width: 100px;">
+                                            <option value="Pending" {% if ticket.status == "Pending" %}selected{% endif %}>
+                                                Pending
+                                            </option>
+                                            <option value="Verified" {% if ticket.status == "Verified" %}selected{% endif %}>
+                                                Verified
+                                            </option>
+                                            <option value="Used" {% if ticket.status == "Used" %}selected{% endif %}>
+                                                Used
+                                            </option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-ticket-detailed mb-2" viewBox="0 0 16 16">
+                                    <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5ZM5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H5Z"/>
+                                    <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6V4.5Z"/>
+                                </svg>
+                                <p class="mb-0">No tickets available for this event.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                <!-- Editable status field -->
-                <td>
-                    <form method="post" action="{% url 'update_ticket_status' ticket.id %}">
-                        {% csrf_token %}
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="Pending" {% if ticket.status == "Pending" %}selected{% endif %}>Pending</option>
-                            <option value="Verified" {% if ticket.status == "Verified" %}selected{% endif %}>Verified</option>
-                            <option value="Used" {% if ticket.status == "Used" %}selected{% endif %}>Used</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8" class="text-center">No tickets available for this event.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Pagination Controls -->
-    <nav>
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav aria-label="Ticket list navigation">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
             </li>
             {% endif %}
+            
             {% for page in page_obj.paginator.page_range %}
-            <li class="page-item {% if page == page_obj.number %}active{% endif %}">
-                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
-            </li>
+                {% if page_obj.number|add:'-3' <= page and page <= page_obj.number|add:'3' %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% endif %}
             {% endfor %}
+
             {% if page_obj.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
             </li>
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 </div>
-{% endblock %}
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle row clicks
+        const rows = document.querySelectorAll('.ticket-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't navigate if clicking on the status form
+                if (!e.target.closest('.status-form')) {
+                    window.location.href = this.dataset.href;
+                }
+            });
+            row.style.cursor = 'pointer';
+        });
+
+        // Add hover effect
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('bg-light')) {
+                    this.classList.add('bg-light');
+                }
+            });
+            row.addEventListener('mouseleave', function() {
+                if (!this.querySelector('select:focus')) {
+                    this.classList.remove('bg-light');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
