@@ -17,6 +17,50 @@
                 <p class="lead text-muted mb-0">Your ticket request has been successfully processed. Once your payment is verified, your ticket will be emailed to you.</p>
             </div>
 
+            <!-- Payment Instructions Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0">Payment Instructions</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="payment-instructions">
+                        {% for method, details in payment_methods %}
+                            {% if ticket.ticket_type.currency == 'KRW' %}
+                                {% if method == 'Bank' %}
+                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price|floatformat:"0" }} {{ ticket.ticket_type.currency }}</strong> to the following bank account:</p>
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                {% if not forloop.first %}
+                                    <div class="text-center my-3">
+                                        <span class="badge bg-secondary px-3 py-2">OR</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if method == 'Venmo' %}
+                                    <p class="mb-3">To complete your purchase, please Venmo <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded text-center mb-3">
+                                        <code class="d-block">@{{ details }}</code>
+                                    </div>
+                                {% elif method == 'Zelle' %}
+                                    <p class="mb-3">To complete your purchase, please Zelle <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded text-center mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% elif method == 'Bank' %}
+                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
             <!-- Ticket Details Card -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white py-3">
@@ -71,50 +115,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Instructions Card -->
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3">
-                    <h2 class="h5 mb-0">Payment Instructions</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="payment-instructions">
-                        {% for method, details in payment_methods %}
-                            {% if ticket.ticket_type.currency == 'KRW' %}
-                                {% if method == 'Bank' %}
-                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price|floatformat:"0" }} {{ ticket.ticket_type.currency }}</strong> to the following bank account:</p>
-                                    <div class="bg-light p-3 rounded mb-3">
-                                        <code class="d-block">{{ details }}</code>
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                {% if not forloop.first %}
-                                    <div class="text-center my-3">
-                                        <span class="badge bg-secondary px-3 py-2">OR</span>
-                                    </div>
-                                {% endif %}
-                                
-                                {% if method == 'Venmo' %}
-                                    <p class="mb-3">To complete your purchase, please Venmo <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
-                                    <div class="bg-light p-3 rounded text-center mb-3">
-                                        <code class="d-block">@{{ details }}</code>
-                                    </div>
-                                {% elif method == 'Zelle' %}
-                                    <p class="mb-3">To complete your purchase, please Zelle <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
-                                    <div class="bg-light p-3 rounded text-center mb-3">
-                                        <code class="d-block">{{ details }}</code>
-                                    </div>
-                                {% elif method == 'Bank' %}
-                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
-                                    <div class="bg-light p-3 rounded mb-3">
-                                        <code class="d-block">{{ details }}</code>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
                     </div>
                 </div>
             </div>
