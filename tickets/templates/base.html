@@ -1,58 +1,140 @@
 <!DOCTYPE html>
-<html lang="en" style="height: 100%;">
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CampusPass{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        html, body {
-            height: 100%;
+        :root {
+            --navbar-height: 60px;
+            --footer-height: 56px;
         }
+
         body {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
+        .navbar {
+            height: var(--navbar-height);
+            background: linear-gradient(90deg, #1a1a1a, #2c2c2c);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0.5rem 0;
+        }
+
         main {
             flex: 1 0 auto;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 1;
         }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1100;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #3498db !important;
+        }
+
         footer {
-            flex-shrink: 0;
+            background: linear-gradient(90deg, #1a1a1a, #2c2c2c);
+            min-height: var(--footer-height);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #3498db !important;
+        }
+
+        .heart-icon {
+            color: #e74c3c;
+            display: inline-block;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Sticky content fixes */
+        .sticky-top {
+            z-index: 1020;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .navbar-collapse {
+                background: linear-gradient(90deg, #1a1a1a, #2c2c2c);
+                padding: 1rem;
+                border-radius: 0 0 0.5rem 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
             <a class="navbar-brand" href="{% url 'event_list' %}">CampusPass</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ user.first_name|default:user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{% url 'event_list' %}">My Events</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2" href="{% url 'event_list' %}">My Events</a></li>
+                                <li><hr class="dropdown-divider my-2"></li>
                                 <li>
-                                    <!-- Logout form -->
-                                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                    <form method="post" action="{% url 'logout' %}">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">Logout</button>
+                                        <button type="submit" class="dropdown-item py-2">Logout</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            <a class="nav-link px-3" href="{% url 'login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                            <a class="nav-link px-3" href="{% url 'register' %}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -60,31 +142,26 @@
         </div>
     </nav>
 
-    <!-- Using <main> to hold page content -->
-    <main class="container mt-4">
+    <main>
         {% block content %}
-        <!-- Child templates will inject their content here -->
         {% endblock %}
     </main>
 
-    <footer class="bg-dark text-light py-3 mt-4">
-        <div class="container text-end">
-            <p class="mb-0" style="font-size: 0.75rem;">
-                Copyright © 2025. All rights reserved. Made with <span style="color: red;">&hearts;</span> by 
-                <span style="color: blue;"><a href="https://www.linkedin.com/in/ryanjhcho/" 
+    <footer class="py-3">
+        <div class="container">
+            <p class="text-end mb-0 text-light" style="font-size: 0.875rem;">
+                Copyright © 2025. All rights reserved. Made with 
+                <span class="heart-icon">&hearts;</span> by 
+                <a href="https://www.linkedin.com/in/ryanjhcho/" 
                    target="_blank" 
-                   class="text-light text-light"
-                   >
+                   class="footer-link"
+                   rel="noopener noreferrer">
                    Ryan Cho
                 </a>
-            </span>
             </p>
         </div>
     </footer>
-    
-    
-      
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
