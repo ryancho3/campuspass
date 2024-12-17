@@ -11,7 +11,7 @@
     <p><strong>Ticket ID:</strong> {{ ticket.unique_id }}</p>
     <p><strong>Event:</strong> {{ event.name }}</p>
     <p><strong>Ticket Type:</strong> {{ ticket.ticket_type.name }}</p>
-    <p><strong>Price:</strong> ${% if ticket.ticket_type.currency == 'KRW' %}{{ ticket.ticket_type.price|floatformat:"0" }}{% else %}{{ ticket.ticket_type.price }}{% endif %} {{ ticket.ticket_type.currency }}</p>
+    <p><strong>Price:</strong> {% if ticket.ticket_type.currency == 'KRW' %}{{ ticket.ticket_type.price|floatformat:"0" }}{% else %}{{ ticket.ticket_type.price }}{% endif %} {{ ticket.ticket_type.currency }}</p>
     
     <h4 class="mt-4">Payment Instructions</h4>
     <div class="payment-instructions">

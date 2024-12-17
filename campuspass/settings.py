@@ -31,7 +31,6 @@ env = environ.Env(
 
 # Read .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-print(BASE_DIR)
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
@@ -157,7 +156,7 @@ LOGOUT_REDIRECT_URL = 'login'  # Redirect here after logout
 
 # Base URL for your site
 SITE_URL = 'https://campuspass.app'  # Use your domain in production, e.g., 'https://yourdomain.com'
-
+# SITE_URL = 'http://127.0.0.1:8000'
 
 # Email configuration
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
