@@ -1,105 +1,119 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
-{% block title %}Purchase Ticket{% endblock %} 
+{% block title %}Purchase Ticket{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <!-- Event Details -->
-  <div class="mb-4">
-    <h1>{{ event.name }}</h1>
-    <p><strong>Description:</strong> {{ event.description }}</p>
-    <p>
-      <strong>Date:</strong> {% if event.is_date_tbd %} TBD {% else %} {{
-      event.date|date:"F j, Y, g:i a" }} {% endif %}
-    </p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
-  </div>
+<div class="container py-4">
+    <div class="row">
+        <!-- Event Summary Card -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 2rem;">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0">Event Summary</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="h4 mb-3">{{ event.name }}</h3>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar-event text-primary me-2" viewBox="0 0 16 16">
+                                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                            {% if event.is_date_tbd %}
+                                <span class="text-muted">TBD</span>
+                            {% else %}
+                                <span class="text-muted">{{ event.date|date:"F j, Y, g:i a" }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-geo-alt text-primary me-2" viewBox="0 0 16 16">
+                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                            </svg>
+                            <span class="text-muted">{{ event.location }}</span>
+                        </div>
+                    </div>
+                    <p class="small text-muted mb-0">{{ event.description }}</p>
+                </div>
+            </div>
+        </div>
 
-  <!-- Purchase Form -->
-  <h3>Purchase {{ ticket_type.name }}</h3>
-  <form
-    method="post"
-    class="needs-validation mx-auto"
-    novalidate
-    style="max-width: 600px"
-  >
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="{{ form.first_name.id_for_label }}" class="form-label"
-        >First Name</label
-      >
-      {{ form.first_name }}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.last_name.id_for_label }}" class="form-label"
-        >Last Name</label
-      >
-      {{ form.last_name }}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.email.id_for_label }}" class="form-label"
-        >Email</label
-      >
-      {{ form.email }}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.confirm_email.id_for_label }}" class="form-label"
-        >Confirm Email</label
-      >
-      {{ form.confirm_email }}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.payment_method.id_for_label }}" class="form-label"
-        >Payment Method</label
-      >
-      {{ form.payment_method }}
-    </div>
-    <div class="mb-3">
-      <label
-        for="{{ form.payment_identifier.id_for_label }}"
-        id="payment-identifier-label"
-        class="form-label"
-        >Payment Identifier</label
-      >
-      {{ form.payment_identifier }}
-      <div class="form-text">
-        Enter the appropriate payment identifier for the selected payment
-        method.
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary w-100">
-      Submit Purchase Request
-    </button>
-  </form>
+        <!-- Purchase Form -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h2 class="h4 mb-0">Purchase {{ ticket_type.name }}</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const paymentMethod = document.getElementById("payment-method");
-      const identifierLabel = document.getElementById(
-        "payment-identifier-label"
-      );
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.confirm_email.id_for_label }}" class="form-label">Confirm Email</label>
+                                {{ form.confirm_email }}
+                            </div>
+                        </div>
 
-      // Function to update the payment identifier label based on the selected method
-      function updateLabel(method) {
-        if (method === "Venmo") {
-          identifierLabel.innerText = "Venmo ID";
-        } else if (method === "Zelle") {
-          identifierLabel.innerText = "Zelle Phone Number";
-        } else if (method === "Bank Transfer") {
-          identifierLabel.innerText = "Bank Account Holder Name";
-        } else {
-          identifierLabel.innerText = "Payment Identifier";
-        }
-      }
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="{{ form.payment_method.id_for_label }}" class="form-label">Payment Method</label>
+                                {{ form.payment_method }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.payment_identifier.id_for_label }}" id="payment-identifier-label" class="form-label">Payment Identifier</label>
+                                {{ form.payment_identifier }}
+                                <div class="form-text">Enter the appropriate payment identifier for the selected payment method.</div>
+                            </div>
+                        </div>
 
-      // Update label whenever the user selects a different payment method
-      paymentMethod.addEventListener("change", function () {
-        updateLabel(this.value);
-      });
-
-      // Update the label on initial load based on the default selected value
-      updateLabel(paymentMethod.value);
-    });
-  </script>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2">
+                                Submit Purchase Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentMethod = document.getElementById('payment-method');
+        const identifierLabel = document.getElementById('payment-identifier-label');
+
+        function updateLabel(method) {
+            const labels = {
+                'Venmo': 'Venmo ID',
+                'Zelle': 'Zelle Phone Number',
+                'Bank Transfer': 'Bank Account Holder Name',
+                'default': 'Payment Identifier'
+            };
+            identifierLabel.innerText = labels[method] || labels.default;
+        }
+
+        paymentMethod.addEventListener('change', function() {
+            updateLabel(this.value);
+        });
+
+        updateLabel(paymentMethod.value);
+    });
+</script>
 {% endblock %}

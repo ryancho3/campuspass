@@ -3,39 +3,122 @@
 {% block title %}Purchase Confirmation{% endblock %}
 
 {% block content %}
-<div class="container mt-4 text-center">
-    <h1>Thank You!</h1>
-    <p>Your ticket request has been successfully processed. Once your payment is verified, your ticket will be emailed to you.</p>
-    
-    <h4 class="mt-4">Ticket Details</h4>
-    <p><strong>Ticket ID:</strong> {{ ticket.unique_id }}</p>
-    <p><strong>Event:</strong> {{ event.name }}</p>
-    <p><strong>Ticket Type:</strong> {{ ticket.ticket_type.name }}</p>
-    <p><strong>Price:</strong> {% if ticket.ticket_type.currency == 'KRW' %}{{ ticket.ticket_type.price|floatformat:"0" }}{% else %}{{ ticket.ticket_type.price }}{% endif %} {{ ticket.ticket_type.currency }}</p>
-    
-    <h4 class="mt-4">Payment Instructions</h4>
-    <div class="payment-instructions">
-        {% for method, details in payment_methods %}
-            {% if ticket.ticket_type.currency == 'KRW' %}
-                {% if method == 'Bank' %}
-                    <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price|floatformat:"0" }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
-                    <pre>{{ details }}</pre>
-                {% endif %}
-            {% else %}
-                {% if not forloop.first %}
-                    <p class="text-center"><strong>OR</strong></p>
-                {% endif %}
-                
-                {% if method == 'Venmo' %}
-                    <p>To complete your purchase, you must Venmo {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>@{{ details }}</strong>.</p>
-                {% elif method == 'Zelle' %}
-                    <p>To complete your purchase, you must Zelle {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to <strong>{{ details }}</strong>.</p>
-                {% elif method == 'Bank' %}
-                    <p>To complete your purchase, you must transfer {{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }} to the following bank account:</p>
-                    <pre>{{ details }}</pre>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Message -->
+            <div class="text-center mb-5">
+                <div class="display-inline-block mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                </div>
+                <h1 class="display-5 mb-3">Thank You!</h1>
+                <p class="lead text-muted mb-0">Your ticket request has been successfully processed. Once your payment is verified, your ticket will be emailed to you.</p>
+            </div>
+
+            <!-- Ticket Details Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0">Ticket Details</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-ticket-detailed text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2z"/>
+                                    <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-muted small mb-0">Ticket ID</p>
+                                    <p class="mb-0"><strong>{{ ticket.unique_id }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-tag text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
+                                    <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-muted small mb-0">Type</p>
+                                    <p class="mb-0"><strong>{{ ticket.ticket_type.name }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar-event text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-muted small mb-0">Event</p>
+                                    <p class="mb-0"><strong>{{ event.name }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-currency-dollar text-primary me-2" viewBox="0 0 16 16">
+                                    <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-muted small mb-0">Price</p>
+                                    <p class="mb-0"><strong>{% if ticket.ticket_type.currency == 'KRW' %}{{ ticket.ticket_type.price|floatformat:"0" }}{% else %}{{ ticket.ticket_type.price }}{% endif %} {{ ticket.ticket_type.currency }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Instructions Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0">Payment Instructions</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="payment-instructions">
+                        {% for method, details in payment_methods %}
+                            {% if ticket.ticket_type.currency == 'KRW' %}
+                                {% if method == 'Bank' %}
+                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price|floatformat:"0" }} {{ ticket.ticket_type.currency }}</strong> to the following bank account:</p>
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                {% if not forloop.first %}
+                                    <div class="text-center my-3">
+                                        <span class="badge bg-secondary px-3 py-2">OR</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if method == 'Venmo' %}
+                                    <p class="mb-3">To complete your purchase, please Venmo <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded text-center mb-3">
+                                        <code class="d-block">@{{ details }}</code>
+                                    </div>
+                                {% elif method == 'Zelle' %}
+                                    <p class="mb-3">To complete your purchase, please Zelle <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded text-center mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% elif method == 'Bank' %}
+                                    <p class="mb-3">To complete your purchase, please transfer <strong>{{ ticket.ticket_type.price }} {{ ticket.ticket_type.currency }}</strong> to:</p>
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <code class="d-block">{{ details }}</code>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
